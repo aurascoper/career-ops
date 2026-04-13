@@ -68,7 +68,49 @@ Para cada pregunta, generar la respuesta siguiendo:
 4. **Especificidad**: Referenciar algo concreto del JD visible en pantalla
 5. **career-ops proof point**: Incluir en "Additional info" si hay campo para ello
 
-**Formato de output:**
+**Classify each field before generating:**
+- **Prose fields** (cover letter, "why this company/role", "tell us about yourself", any free-text >100 words) → generate draft, then run through prose-craft review gate (Step 5.5 below)
+- **Structured fields** (short answers, dropdowns, yes/no, salary, work authorization) → generate directly, no prose-craft gate needed
+
+## Paso 5.5 — Prose-Craft Review Gate (cover letters and long-form prose only)
+
+For every prose field identified in Step 5, run a two-stage review before presenting to the user:
+
+**Stage 1 — Fast pre-screen (pcr)**
+
+If the `pcr` binary is available at `../prose-craft/target/debug/pcr` (or `target/release/pcr`), pipe the draft through it first:
+
+```bash
+echo "[draft text]" | /Users/aurascoper/Developer/jobs/prose-craft/target/debug/pcr
+```
+
+- **Exit 0** (clean): proceed to Stage 2
+- **Exit 1** (hard fails found): fix all hard fails silently before Stage 2. Hard fails: em dashes, fatal negation pattern ("This isn't X. This is Y."), AI vocabulary ("delve", "it's important to note", "in today's [anything]"), ChatGPT-isms ("let me be clear", "here's the thing though", "sit with")
+
+**Stage 2 — Full prose-craft review agents**
+
+Dispatch two review agents in parallel using the Agent tool:
+
+1. **Prose review agent** (`subagent_type: "prose-craft:prose-review"`):
+   - Pass the draft text
+   - Checks: banned phrases, mid-tier AI vocabulary, structural monotony, voice drift, grounding, soullessness
+
+2. **Craft review agent** (`subagent_type: "prose-craft:craft-review"`):
+   - Pass the draft text
+   - Checks: naming opportunities, aphoristic endings, central-point dwelling, structural literary devices, human-moment anchoring
+
+Wait for both agents. Then:
+- **Hard fails** (from either agent): fix silently before presenting
+- **Advisories**: present in a table below the draft. User accepts, rejects, or modifies each row.
+
+**What good cover letter prose looks like for career-ops:**
+- Concrete-first: lead with a specific number, scene, or person — not "I am excited to apply"
+- Named concepts: if the application describes a dynamic, name it in 2-4 words
+- No em dashes, no "passionate about", no "proven track record", no "leveraged"
+- Short paragraphs (1-3 sentences). Opening must earn the next sentence.
+- The cover letter should read like a person wrote it, not like a committee produced it
+
+**Formato de output (after prose-craft gate clears):**
 
 ```
 ## Respuestas para [Empresa] — [Rol]
@@ -80,8 +122,8 @@ Basado en: Report #NNN | Score: X.X/5 | Arquetipo: [tipo]
 ### 1. [Pregunta exacta del formulario]
 > [Respuesta lista para copy-paste]
 
-### 2. [Siguiente pregunta]
-> [Respuesta]
+### 2. Cover Letter
+> [Prose-craft reviewed draft — hard fails fixed, advisories presented separately]
 
 ...
 
