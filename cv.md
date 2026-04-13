@@ -99,10 +99,11 @@ Scientist-turned-data-engineer with a full-stack background: pharmaceutical anal
 ### Biofilms — Computational Extremophile Dynamics Simulator
 **github.com/aurascoper/Biofilms** | 2025
 
-- Developed multi-species biofilm simulator in R/Julia modeling radiotrophic microbial communities under thorium decay and gamma radiation stress
-- Implemented Hamiltonian mechanics with Langevin stochastic dynamics (canonical equations dq/dt = ∂H/∂p, dp/dt = −∂H/∂p + η(t)) for species-specific motility and radiation sensitivity
-- Classified extremophile survival strategies from subcellular RNA localization datasets via k-means clustering and decision tree models; 2D/3D interactive visualizations (ggplot2, PlotlyJS)
-- Applications: bioremediation of radioactive contamination, radiation-resistant bioengineering; published CC0-1.0
+- Co-authored "Modeling Radiotrophic Fitness" (with Brett Faulkner, B.Sc BioPhys): mathematical framework for spatiotemporal dynamics of radiotrophic microbial communities (*Cryptococcus neoformans*, *Deinococcus radiodurans*) under gamma and ionizing radiation stress
+- Derived full PSDE system: Hamiltonian H(p,q) + Langevin stochastic noise η(t,x) + reaction-diffusion melanin production (∂M/∂t = D_M∇²M + α_M·N_RadioF·R); symplectic integration preserves energy/momentum over long simulation windows
+- Modeled ionizing radiation decay (I = I_γ·exp(−κx)) and UV oscillatory fields; species fitness Fs(t,x) driven by phase-locking synchronization with radiation gradients
+- Applied k-means clustering and Hamiltonian decision trees (kNN variant weighted by phase-locked kernel Γ) to classify extremophile survival strategies; Boltzmann path integral formalism for fitness landscape traversal
+- Applications: bioremediation of nuclear contaminants (Th, Am, Cm, Np), radiation-resistant bioengineering; published CC0-1.0
 
 ### prose-craft (Claude Code Plugin)
 **github.com/aurascoper** | 2026
