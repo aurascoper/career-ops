@@ -7,7 +7,7 @@
 
 ## Professional Summary
 
-Scientist-turned-data-engineer with a full-stack background: pharmaceutical analytical chemistry at GMP/GLP-compliant facilities (Dynalabs, Biokyowa), statistical process control in production environments, and 3+ years certifiied STEM instruction. Fluent in Python, R, Julia, SQL, and Rust. Currently competing in the ARC-AGI Prize 2026 (neuroevolution + MCTS solver, holdout 0.79+) while teaching full-time. Looking for a role that puts scientific domain knowledge, data engineering, and ML together.
+Scientist-turned-data-engineer with a full-stack background: pharmaceutical analytical chemistry at GMP/GLP-compliant facilities (Dynalabs, Biokyowa), statistical process control in production environments, and 3+ years certified STEM instruction. Fluent in Python, R, Julia, SQL, and Rust. Currently running a two-layer Missouri ag-monitoring product (Sentinel-2/SAR, Earth Engine, Render-deployed dashboard) and competing in the ARC-AGI Prize 2026 (neuroevolution + MCTS solver, holdout 0.79+) while teaching full-time. Looking for a role that puts scientific domain knowledge, geospatial data, and ML together.
 
 ---
 
@@ -62,14 +62,15 @@ Scientist-turned-data-engineer with a full-stack background: pharmaceutical anal
 
 ## Independent Research
 
-### Agricultural Yield Pipeline — Geospatial & Real-Time Crop Analytics
+### Agricultural Yield Pipeline — Two-Layer Crop Monitoring System
 **github.com/aurascoper/agri_yield_pipeline** | 2026
+**Live demo:** mo-agri-baseline.onrender.com
 
-- Built an end-to-end agricultural monitoring pipeline integrating satellite imagery, weather station data, and USDA crop yields for Missouri corn production
-- Implemented NDVI computation from Sentinel-2 satellite bands via Google Earth Engine at 10m spatial resolution; spatial reduction over Missouri agricultural bounding boxes
-- Designed real-time streaming architecture: async NOAA/USDA API ingestion → Kafka event topics → stream processor (drought/flood detection, rolling soil moisture aggregations) → InfluxDB time-series + PostgreSQL alerts
-- Trained GradientBoosting yield prediction model on 14-year Missouri corn dataset (NDVI + weather features → bu/acre); LOO-CV R² = 0.80, RMSE = 9.9 bu/acre; peak growing-season NDVI is the dominant predictor
-- Built FastAPI backend with Redis caching and interactive Dash dashboard (Plotly + Leaflet map) for geospatial agricultural monitoring; fully containerized via Docker Compose
+- Shipped a two-layer ag-analytics product: **Layer 1** — statewide historical yield model across 97 Missouri counties, 23 years of USDA/NOAA/MODIS data, R² = 0.713 (GradientBoosting on NDVI + PRCP + TMAX features); **Layer 2** — per-field live monitoring on Google Earth Engine with service-account auth and a Render-deployed Dash/Plotly dashboard
+- Wrote the Earth Engine exporters: Sentinel-2 L2A 10m NDVI with SCL cloud masking (classes 3/8/9/10 dropped); Sentinel-1 C-band SAR VV dB with 30m focal-median speckle filter, ASCENDING orbit after the S1B failure killed US Midwest descending coverage
+- Built a Layer-1-scores-Layer-2 stress alerter: snaps each field to nearest county, pulls the DOY ±7 county baseline from the shared parquet cache, z-scores the live field NDVI, and emits warn/stress pings above |z|≥1.5 / 2.0. First real run across three demo fields caught a +4.3σ anomaly at a Nodaway seed trial (cover crop lingering green past senescence)
+- Ran per-county Daymet 1-km correlations for 115 MO counties (85 passed the ≥10-paired-year threshold): mean r(July TMAX, yield) = −0.63 with 84/85 counties negative; mean r(May–Aug PRCP, yield) = +0.33; the heat-stress signal dominates
+- Stack: Python + Earth Engine + rioxarray + GeoPandas; Dash/Plotly dashboard with matplotlib-rasterized tile previews; Render free-tier deploy via Blueprint (`render.yaml`, gunicorn, pyarrow) with a carved-out `requirements-dash.txt` that excludes the GDAL/Kafka heavy deps so the image builds clean
 
 ### ARC-AGI Prize 2026 Competitor
 **Self-directed** | 2025 – Present
@@ -131,11 +132,11 @@ Scientist-turned-data-engineer with a full-stack background: pharmaceutical anal
 
 **Bio-Process Analytics:** HPLC, IC, SEC, Microbial Analysis, Flow Cytometry, GMP/GLP compliance
 
-**Statistical Methods:** Statistical Process Control (SPC), experimental design, formative/summative assessment analysis
+**Statistical Methods:** Statistical Process Control (SPC), experimental design, linear mixed models, k-means clustering, formative/summative assessment analysis
 
-**GIS / Spatial:** Google Earth Engine, Sentinel-2 NDVI, Interactive Maps, Growth Models, Overlays (OpenSIS, OpenGIS, Leaflet)
+**GIS / Spatial:** Google Earth Engine (service-account auth, S2/S1 exports), Sentinel-2 L2A NDVI, Sentinel-1 C-band SAR (VV dB), Daymet 1-km gridded weather, rioxarray, geopandas, ArcGIS, Leaflet, raster tiling + TIF→PNG rendering
 
-**ML / AI:** Neuroevolution, MCTS, DSL design, Python ML pipelines, scikit-learn, JAX, Claude API, Docker, Kafka, FastAPI, Langevin dynamics/SDEs, market microstructure
+**ML / AI:** Neuroevolution, MCTS, DSL design, Python ML pipelines, scikit-learn, JAX, PyTorch, Keras, TensorFlow, PySpark, Claude API, Docker, Kafka, FastAPI, Langevin dynamics/SDEs, market microstructure
 
 **Teaching:** Curriculum design, 5-12 STEM instruction, formative assessment, Missouri DESE certified
 
