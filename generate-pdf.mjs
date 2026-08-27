@@ -1481,7 +1481,16 @@ export async function inlineLocalFonts(html) {
  * @returns {Promise<{outputPath: string, pageCount: number, size: number}>}
  */
 export async function renderHtmlToPdf(html, outputPath, opts = {}) {
-  const launchBrowser = opts.launchBrowser || ((options) => chromium.launch(options));
+  // Prefer the bundled Playwright Chromium, but allow an env-var override to a
+  // locally-installed Chrome/Chromium (useful when the Playwright cache is
+  // missing the headless-shell binary, e.g. after a partial install).
+  const launchBrowser =
+    opts.launchBrowser ||
+    ((options) => {
+      const executablePath = process.env.PLAYWRIGHT_CHROME_PATH || undefined;
+      if (executablePath) options.executablePath = executablePath;
+      return chromium.launch(options);
+    });
   let browser = null;
   try {
     browser = await launchBrowser({ headless: true });
